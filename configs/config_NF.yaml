@@ -8,7 +8,7 @@ training:
   experiment_name: "sudoku-nf"
   training_metrics: ["accuracy", "accuracy_sudoku"]
   validation_metrics: ["accuracy", "accuracy_sudoku"]
-  seed: 42
+  seed: 123
   scaler_regime: "full"
 
 dataset:
@@ -19,7 +19,7 @@ model:
   name: "SudokuCNN"
   losses: [{"name": "sudoku_loss", "weight": 1.0}]
   nll_weight: 1.0  
-  #pretrained_path: "models_cache/sudoku-nf/model_24500.pt"
+  #pretrained_path: "models_cache/sudoku-nf/model_43000.pt"
   scaler:
     name: "SudokuNormalizingFlowScaler"
     args:

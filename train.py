@@ -85,7 +85,7 @@ def train_model(config):
     base_model_dir = os.getenv('MODELS_DIR', 'models_cache')
     model_dir = os.path.join(base_model_dir, config['training']['experiment_name'])
     os.makedirs(model_dir, exist_ok=True)
-
+    device = torch.device(config['training'].get('device', 'cuda:0') if torch.cuda.is_available() else "cpu")
     # Initialize wandb
     run = wandb.init(
         project=os.getenv('WANDB_PROJECT'),
@@ -108,6 +108,11 @@ def train_model(config):
     if config['model'].get('pretrained_path', None):
         model.load_state_dict(torch.load(config['model']['pretrained_path']), strict=False)
     
+    if torch.cuda.device_count() > 1:
+        logger.info(f"Using {torch.cuda.device_count()} GPUs with DataParallel")
+        model = torch.nn.DataParallel(model)
+
+    model.to(device)
     run.watch(model)
     
     num_trainable_params = count_trainable_parameters(model)
